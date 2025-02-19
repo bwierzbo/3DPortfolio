@@ -32,7 +32,7 @@ export function AboutMe({ onArrowClick }: Props) {
 
   return (
 
-    <mesh position={[-100, 0, 0]}>
+    <mesh ref={meshRef} position={[-100, 0, 0]}>
       {/* Attach the event handler to the entire gltf.scene so sub-mesh clicks bubble up */}
       <primitive object={gltf.scene} onPointerDown={handlePointerDown} />
     </mesh>

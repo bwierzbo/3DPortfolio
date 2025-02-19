@@ -9,11 +9,12 @@ import * as THREE from "three";
 import { Sign } from "./sign";
 import { Floor } from "./floor";
 import { AboutMe } from "./aboutme";
+import { Resume } from "./resume";
 
 export function Scene() {
   const { camera } = useThree();
   const controlsRef = useRef<OrbitControlsImpl>(null);
-
+ 
   // CAMERA POSITION starts near the sign
   const [cameraTarget, setCameraTarget] = useState(() => new THREE.Vector3(0, 3, 10));
   // ORBIT TARGET starts near the sign’s center (x=0,y=3,z=0)
@@ -33,10 +34,15 @@ export function Scene() {
           setCameraTarget(new THREE.Vector3(-100, 3, 10));
           setOrbitTarget(new THREE.Vector3(-100, 3, 0));
           break;
+
+        case "Arrow2":
+          console.log("Moving to Resume Board...");
+          setCameraTarget(new THREE.Vector3(100, 10, 20));
+          setOrbitTarget(new THREE.Vector3(100, 10, 0));
+          break;
     
         case "BackArrow":
           console.log("Moving Back to Sign...");
-          
           setCameraTarget(new THREE.Vector3(0, 3, 10));
           setOrbitTarget(new THREE.Vector3(0, 3, 0));
           break;
@@ -66,8 +72,11 @@ export function Scene() {
       {/* Sign with clickable arrows */}
       <Sign onArrowClick={handleArrowClick} />
 
-      {/* AboutMe board placed at x=100 */}
+      {/* AboutMe board placed at x=-100 */}
       <AboutMe onArrowClick={handleArrowClick} />
+      
+      {/* Resume board placed at x=100 */}
+      <Resume onArrowClick={handleArrowClick} />
     </>
   );
 }

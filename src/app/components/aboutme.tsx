@@ -6,12 +6,12 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Mesh } from "three";
 
 
-interface AboutMeProps {
+interface Props {
     // Callback to notify parent about which arrow was clicked
-    onArrowClick?: (arrowName: string) => void;
+    onArrowClick?: (aboutArrow: string) => void;
   }
 
-export function AboutMe({ onArrowClick }: AboutMeProps) {
+export function AboutMe({ onArrowClick }: Props) {
   const fileUrl = "/AboutMe.glb"; // Make sure this is in /public
   const meshRef = useRef<Mesh>(null!);
 
@@ -32,7 +32,8 @@ export function AboutMe({ onArrowClick }: AboutMeProps) {
 
   return (
 
-    <mesh ref={meshRef} position={[-100, 0, 0]}>
+    <mesh position={[-100, 0, 0]}>
+      {/* Attach the event handler to the entire gltf.scene so sub-mesh clicks bubble up */}
       <primitive object={gltf.scene} onPointerDown={handlePointerDown} />
     </mesh>
   );

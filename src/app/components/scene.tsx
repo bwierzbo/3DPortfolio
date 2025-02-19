@@ -17,35 +17,34 @@ export function Scene() {
   // CAMERA POSITION starts near the sign
   const [cameraTarget, setCameraTarget] = useState(() => new THREE.Vector3(0, 3, 10));
   // ORBIT TARGET starts near the sign’s center (x=0,y=3,z=0)
-  const [orbitTarget, setOrbitTarget] = useState(() => new THREE.Vector3(0, 3, 0));
+  const [orbitTarget, setOrbitTarget] = useState(() => new THREE.Vector3(-0, 3, 0));
 
   useFrame(() => {
-    // Lerp the camera position towards cameraTarget
-    camera.position.lerp(cameraTarget, 0.05);
-
-    // Lerp the orbit target towards orbitTarget
-    controlsRef.current?.target.lerp(orbitTarget, 0.05);
-
-    // Update OrbitControls so it knows camera and target have changed
+    camera.position.lerp(new THREE.Vector3(...cameraTarget.toArray()), 0.05);
+    controlsRef.current?.target.lerp(new THREE.Vector3(...orbitTarget.toArray()), 0.05);
     controlsRef.current?.update();
   });
 
   // Triggered when user clicks an arrow on the sign
   const handleArrowClick = (arrowName: string) => {
     switch (arrowName) {
-      case "Arrow1":
-        // Pan the camera far to the left (x=-100) and keep same y,z offset
-        setCameraTarget(new THREE.Vector3(-100, 3, 10));
-        // Orbit around the AboutMe board’s position (x=100,y=3,z=0)
-        setOrbitTarget(new THREE.Vector3(-100, 3, 0));
-        break;
-
-      case "BackArrow1":
-        // Pan back to the sign at (0,3,10) and orbit around (0,3,0)
-        setCameraTarget(new THREE.Vector3(0, 3, 10));
-        setOrbitTarget(new THREE.Vector3(0, 3, 0));
-        break;
-    }
+        case "Arrow1":
+          console.log("Moving to AboutMe Board...");
+          setCameraTarget(new THREE.Vector3(-100, 3, 10));
+          setOrbitTarget(new THREE.Vector3(-100, 3, 0));
+          break;
+    
+        case "BackArrow":
+          console.log("Moving Back to Sign...");
+          
+          setCameraTarget(new THREE.Vector3(0, 3, 10));
+          setOrbitTarget(new THREE.Vector3(0, 3, 0));
+          break;
+    
+        default:
+          console.warn(`Unrecognized arrow: ${arrowName}`);
+          break;
+      }
   };
 
   return (
@@ -68,7 +67,7 @@ export function Scene() {
       <Sign onArrowClick={handleArrowClick} />
 
       {/* AboutMe board placed at x=100 */}
-      <AboutMe />
+      <AboutMe onArrowClick={handleArrowClick} />
     </>
   );
 }

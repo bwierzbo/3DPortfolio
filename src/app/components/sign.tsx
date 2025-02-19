@@ -5,12 +5,12 @@ import { useLoader, ThreeEvent } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Mesh } from "three";
 
-interface SignProps {
+interface Props {
   // Callback to notify parent about which arrow was clicked
   onArrowClick?: (arrowName: string) => void;
 }
 
-export function Sign({ onArrowClick }: SignProps) {
+export function Sign({ onArrowClick }: Props) {
   const fileUrl = "/DirectionalSign.glb"; // Make sure this is in /public
   const meshRef = useRef<Mesh>(null!);
 

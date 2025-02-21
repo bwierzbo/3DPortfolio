@@ -14,43 +14,54 @@ import { Resume } from "./resume";
 export function Scene() {
   const { camera } = useThree();
   const controlsRef = useRef<OrbitControlsImpl>(null);
- 
-  // CAMERA POSITION starts near the sign
-  const [cameraTarget, setCameraTarget] = useState(() => new THREE.Vector3(0, 3, 10));
-  // ORBIT TARGET starts near the sign’s center (x=0,y=3,z=0)
-  const [orbitTarget, setOrbitTarget] = useState(() => new THREE.Vector3(-0, 3, 0));
 
+  // Track user zoom level
+  const [zoomLevel, setZoomLevel] = useState(camera.position.z);
+
+  // CAMERA POSITION starts near the sign
+  const [cameraTarget, setCameraTarget] = useState(new THREE.Vector3(0, 3, zoomLevel));
+  // ORBIT TARGET starts near the sign’s center (x=0,y=3,z=0)
+  const [orbitTarget, setOrbitTarget] = useState(new THREE.Vector3(0, 3, 0));
+
+  // Preserve user zoom level
   useFrame(() => {
-    camera.position.lerp(new THREE.Vector3(...cameraTarget.toArray()), 0.05);
-    controlsRef.current?.target.lerp(new THREE.Vector3(...orbitTarget.toArray()), 0.05);
+    camera.position.lerp(new THREE.Vector3(cameraTarget.x, cameraTarget.y, zoomLevel), 0.05);
+    controlsRef.current?.target.lerp(orbitTarget, 0.05);
     controlsRef.current?.update();
   });
 
-  // Triggered when user clicks an arrow on the sign
-  const handleArrowClick = (arrowName: string) => {
-    switch (arrowName) {
-        case "Arrow1":
-          console.log("Moving to AboutMe Board...");
-          setCameraTarget(new THREE.Vector3(-100, 3, 10));
-          setOrbitTarget(new THREE.Vector3(-100, 3, 0));
-          break;
+  // Track zooming from OrbitControls
+  const handleZoom = () => {
+    setZoomLevel(camera.position.z);
+  };
 
-        case "Arrow2":
-          console.log("Moving to Resume Board...");
-          setCameraTarget(new THREE.Vector3(100, 10, 20));
-          setOrbitTarget(new THREE.Vector3(100, 10, 0));
-          break;
-    
-        case "BackArrow":
-          console.log("Moving Back to Sign...");
-          setCameraTarget(new THREE.Vector3(0, 3, 10));
-          setOrbitTarget(new THREE.Vector3(0, 3, 0));
-          break;
-    
-        default:
-          console.warn(`Unrecognized arrow: ${arrowName}`);
-          break;
-      }
+  // Handle arrow clicks for navigation
+  const handleArrowClick = (arrowName: string) => {
+    console.log(`Clicked Arrow: ${arrowName}`);
+
+    switch (arrowName) {
+      case "Arrow1":
+        console.log("Moving to AboutMe Board...");
+        setCameraTarget(new THREE.Vector3(-100, 3, zoomLevel));
+        setOrbitTarget(new THREE.Vector3(-100, 3, 0));
+        break;
+
+      case "Arrow2":
+        console.log("Moving to Resume Board...");
+        setCameraTarget(new THREE.Vector3(100, 10, zoomLevel));
+        setOrbitTarget(new THREE.Vector3(100, 10, 0));
+        break;
+
+      case "BackArrow":
+        console.log("Moving Back to Sign...");
+        setCameraTarget(new THREE.Vector3(0, 3, zoomLevel));
+        setOrbitTarget(new THREE.Vector3(0, 3, 0));
+        break;
+
+      default:
+        console.warn(`Unrecognized arrow: ${arrowName}`);
+        break;
+    }
   };
 
   return (
@@ -60,16 +71,21 @@ export function Scene() {
       <ambientLight intensity={0.6} />
       <directionalLight position={[10, 10, 10]} />
 
-      {/* OrbitControls with a ref so we can manipulate the .target */}
+      {/* OrbitControls with improved settings */}
       <OrbitControls
         ref={controlsRef}
-        minPolarAngle={0}
-        maxPolarAngle={(Math.PI / 2) - 0.1}
+        enableDamping={true} // Smooth movement
+        dampingFactor={0.1} // Reduce laggy movement
+        enableZoom={true} // Allow zooming
+        minDistance={5} // Prevent zooming too close
+        maxDistance={30} // Prevent zooming too far
+        enablePan={true} // Allow dragging
+        onChange={handleZoom} // Track zoom level
       />
 
       <Floor />
 
-      {/* Sign with clickable arrows */}
+      {/* Sign with arrow click detection */}
       <Sign onArrowClick={handleArrowClick} />
 
       {/* AboutMe board placed at x=-100 */}

@@ -48,8 +48,8 @@ export function Scene() {
 
       case "Arrow2":
         console.log("Moving to Resume Board...");
-        setCameraTarget(new THREE.Vector3(100, 9, zoomLevel));
-        setOrbitTarget(new THREE.Vector3(100, 9, 0));
+        setCameraTarget(new THREE.Vector3(100, 4, zoomLevel));
+        setOrbitTarget(new THREE.Vector3(100, 4, 0));
         break;
 
       case "BackArrow":

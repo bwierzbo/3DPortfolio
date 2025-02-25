@@ -12,7 +12,7 @@ interface Props {
   }
 
 export function Resume({ onArrowClick }: Props) {
-  const fileUrl = "/Resume.glb"; // Make sure this is in /public
+  const fileUrl = "/Resumev2.glb"; // Make sure this is in /public
   const meshRef = useRef<Mesh>(null!);
 
   const gltf = useLoader(GLTFLoader, fileUrl);

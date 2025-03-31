@@ -9,6 +9,7 @@ import type { OrbitControls as OrbitControlsType } from "three-stdlib";
 import { Sign } from "./sign";
 import { AboutMe } from "./aboutme";
 import { Resume } from "./resume";
+import { Projects } from "./projects"
 import { Ground } from "./ground";
 import { SkyBackground } from "./skybackground";
 
@@ -20,6 +21,7 @@ export function Scene() {
 const Locations = {
   home: new THREE.Vector3(0, 5, 10),
   about: new THREE.Vector3(-100, 5, 10),
+  projects: new THREE.Vector3(200, 7, 10),
   resume1: new THREE.Vector3(98, 8, 5),
   resume2: new THREE.Vector3(107, 8, 5),
   resume3: new THREE.Vector3(116, 8, 5),
@@ -27,6 +29,7 @@ const Locations = {
 const Targets = {
   home: new THREE.Vector3(0, 3, 0),
   about: new THREE.Vector3(-100, 5, 0),
+  projects: new THREE.Vector3(200, 5, 0),
   resume1: new THREE.Vector3(98, 8, 0),
   resume2: new THREE.Vector3(107, 8, 0),
   resume3: new THREE.Vector3(116, 8, 0),
@@ -116,6 +119,11 @@ const Socials: Record<string, string> = {
       setOrbitTarget(Targets.resume1);
       break;
 
+      case "Arrow3": // Move to Resume
+      setCameraTarget(Locations.projects);
+      setOrbitTarget(Targets.projects);
+      break;
+
       case "linkedin":
         window.open(Socials.LinkedIn)
         break;
@@ -193,6 +201,7 @@ const Socials: Record<string, string> = {
       <Sign onArrowClick={handleArrowClick} />
       <AboutMe onArrowClick={handleArrowClick} />
       <Resume onArrowClick={handleArrowClick} />
+      <Projects onArrowClick={handleArrowClick} />
       <Ground />
       <SkyBackground />
     </>

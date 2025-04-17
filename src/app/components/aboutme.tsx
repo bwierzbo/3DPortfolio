@@ -4,36 +4,38 @@ import React, { useRef } from "react";
 import { useLoader, ThreeEvent } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { Mesh } from "three";
-
+import { useFocusVisibility } from "../hooks/useFocusVisibility"; // adjust path if needed
 
 interface Props {
-    // Callback to notify parent about which arrow was clicked
-    onArrowClick?: (aboutArrow: string) => void;
-  }
+  onArrowClick?: (arrowName: string) => void;
+  activeFocus: string | null;
+}
 
-export function AboutMe({ onArrowClick }: Props) {
-  const fileUrl = "/AboutMe.glb"; // Make sure this is in /public
+export function AboutMe({ onArrowClick, activeFocus }: Props) {
+  const fileUrl = "/AboutMe.glb";
   const meshRef = useRef<Mesh>(null!);
-
   const gltf = useLoader(GLTFLoader, fileUrl);
-  
 
-  
-  // Handle pointer down on any sub-mesh
+  // Apply visibility logic using the custom hook
+  useFocusVisibility(gltf.scene, {
+    monument: ["MonumentText", "MonumentBack"],
+    volleyball: ["VolleyballText", "VolleyballBack"],
+    computer: ["ComputerInfo", "ComputerBack"],
+    photos: ["PhotoText", "PhotoHighlight"]
+  }, activeFocus);
+
   const handlePointerDown = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation();
     const clickedObject = e.object;  // The specific sub-mesh
 
     console.log("Clicked mesh:", clickedObject.name);
     if (onArrowClick) {
-      onArrowClick(clickedObject.name);
+      onArrowClick(e.object.name);
     }
   };
 
   return (
-
     <mesh ref={meshRef} position={[-100, 0, 0]}>
-      {/* Attach the event handler to the entire gltf.scene so sub-mesh clicks bubble up */}
       <primitive object={gltf.scene} onPointerDown={handlePointerDown} />
     </mesh>
   );
